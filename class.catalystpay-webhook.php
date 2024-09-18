@@ -633,11 +633,10 @@ function customize_checkout_button_text( $button_text ) {
 //     // This function can be used for additional customization if needed
 // }
 
-function customize_shop_page_buttons_text() {
-	global $product;
+function customize_shop_page_buttons_text( $__, $that ) {
 
 	// Check if the product is a subscription product and exists in the subscription table
-	if ( is_product_in_subscription_table( $product->get_id() ) ) {
+	if ( is_product_in_subscription_table( $that->get_id() ) ) {
 		return 'Subscribe';
 	} else {
 		return 'ADD TO CART';
