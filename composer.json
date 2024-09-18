@@ -1,0 +1,5 @@
+{
+    "require": {
+        "catalystpay/gateway-php-sdk": "^0.0.2"
+    }
+}

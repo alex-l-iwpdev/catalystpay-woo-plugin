@@ -1,0 +1,10 @@
+.idea/
+node_modules/
+vendor/
+
+*.lock
+.DS_Store
+.phpcs.cache
+Thumbs.db
+quote.log
+yarn.lock
