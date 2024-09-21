@@ -448,16 +448,6 @@ function save_custom_subscription_fields( $post_id ) {
 	}
 }
 
-// Display subscription information on the product page
-// add_action('woocommerce_single_product_summary', 'display_subscription_checkbox_value', 25);
-// function display_subscription_checkbox_value() {
-//     global $post;
-//     $subscription_checkbox = get_post_meta($post->ID, '_subscription_checkbox', true);
-//     if ($subscription_checkbox === 'yes') {
-//         echo '<p>This product is available for subscription.</p>';
-//     }
-// }
-
 // Add JavaScript to handle showing/hiding subscription fields
 add_action( 'admin_footer', 'subscription_fields_js' );
 function subscription_fields_js() {
@@ -483,19 +473,6 @@ function subscription_fields_js() {
 	</script>
 	<?php
 }
-
-// Add subscription checkbox to product
-// add_action('woocommerce_product_options_general_product_data', 'add_subscription_checkbox_to_product');
-// function add_subscription_checkbox_to_product() {
-//     woocommerce_wp_checkbox(
-//         array(
-//             'id'            => '_subscription_checkbox',
-//             'label'         => __('Enable Subscription', 'woocommerce'),
-//             'description'   => __('Check this box to enable subscription for this product.', 'woocommerce'),
-//             'desc_tip'      => true,
-//         )
-//     );
-// }
 
 // Save subscription checkbox value
 add_action( 'woocommerce_process_product_meta', 'save_subscription_data' );
@@ -625,13 +602,6 @@ function customize_checkout_button_text( $button_text ) {
 
 	return $button_text;
 }
-
-// // Step 3: Hook into the WooCommerce checkout page
-// add_action( 'woocommerce_review_order_before_submit', 'customize_checkout_button' );
-// function customize_checkout_button() {
-//     // Output any additional content before the order button
-//     // This function can be used for additional customization if needed
-// }
 
 function customize_shop_page_buttons_text( $__, $that ) {
 
@@ -801,20 +771,6 @@ function subscription_menu_callback() {
 
 
 	$orders = $wpdb->get_results( $query );
-
-	// // Display filter dropdown
-	// echo '<div class="wrap">';
-	// echo '<h1 class="wp-heading-inline">Orders</h1>';
-	// echo '<hr class="wp-header-end">';
-	// echo '<form method="get">';
-	// echo '<input type="hidden" name="page" value="subscription_menu">';
-	// echo '<label for="order_type">Order Type:</label>';
-	// echo '<select id="order_type" name="order_type">';
-	// echo '<option value="">All Orders</option>';
-	// echo '<option value="subscription"' . selected($is_subscription_filter, true, false) . '>Subscription Orders</option>';
-	// echo '</select>';
-	// echo '<input type="submit" class="button" value="Filter">';
-	// echo '</form>';
 
 	if ( ! empty( $orders ) ) {
 		echo '<h2>Orders Ordered by Product</h2>';

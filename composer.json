@@ -1,5 +1,29 @@
 {
-    "require": {
-        "catalystpay/gateway-php-sdk": "^0.0.2"
+  "name": "wc-catalystpay",
+  "autoload": {
+    "psr-4": {
+      "WcCatalystpayGetway\\Plugin\\": "src/php"
     }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "WcCatalystpayGetway\\Plugin\\": "src/php"
+    }
+  },
+  "prefer-stable": true,
+  "authors": [
+    {
+      "name": "alexl",
+      "email": "admin@i-wp-dev.com"
+    }
+  ],
+  "config": {
+    "platform": {
+      "php": "7.4"
+    }
+  },
+  "minimum-stability": "dev",
+  "require": {
+    "catalystpay/gateway-php-sdk": "^0.0.2"
+  }
 }
