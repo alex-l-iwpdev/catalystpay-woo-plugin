@@ -330,6 +330,10 @@ function wc_catalystpay_gateway_init() {
 			public function thankyou_page( $order ) {
 				$order_info = wc_get_order( $order );
 				$id         = sanitize_text_field( $_GET['id'] );
+				if ( $order_info->has_status( [ 'processing', 'shipped', 'completed' ] ) ) {
+					return;
+				}
+
 				global $wpdb;
 				$catalystpay = new Catalystpay(
 					$this->settings['api_channel'],
@@ -392,6 +396,15 @@ function wc_catalystpay_gateway_init() {
 									]
 								);
 							}
+						}
+
+						if ( $order_info->has_status( [ 'completed' ] ) ) {
+							$url  = $_SERVER['REQUEST_URI'];
+							$url  .= ( strpos( $url, '?' ) === false ? '?' : '&' ) . 'refresh=1';
+							$note = __( 'Transfer id: ', 'wc-catalystpay' ) . $result['id'];
+							$order_info->add_order_note( $note );
+							wp_safe_redirect( $url, 301 );
+							die();
 						}
 					}
 				}
@@ -545,7 +558,7 @@ function wc_catalystpay_gateway_init() {
 						$data = [
 							'amount'                      => $order->get_total(),
 							'currency'                    => $order->get_currency(),
-							'paymentType'                 => $this->settings['preauthorize'] === 'yes' ? 'PA' : 'DB',
+							'paymentType'                 => $this->settings['preauthorize'] === 'yes' ? 'DB' : 'DB',
 							'locale'                      => $locale,
 							'customer.merchantCustomerId' => $order->get_customer_id(),
 							'customer.givenName'          => $order->get_billing_first_name(),

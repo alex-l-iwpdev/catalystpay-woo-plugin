@@ -44,17 +44,67 @@ document.addEventListener( 'DOMContentLoaded', function() {
 			if ( checkoutForm.find( 'input[name="payment_method"]:checked' ).val() !== paymentMethod ) {
 				return true;
 			}
-			const settings = JSON.parse( data.settings );
 
-			return paymentModal( settings, data.redirect, data.message );
+			const $modal = $( '#ccModal' );
+
+			try {
+				const settings = JSON.parse( data.settings );
+
+				wpwlOptions.locale = settings.locale;
+				if ( true === settings.gpay ) {
+					wpwlOptions.googlePay = {
+						gatewayMerchantId: settings.api_merchant
+					};
+				}
+
+				if ( true === settings.apple_pay ) {
+					wpwlOptions.applePay = {
+						version: 3,
+						merchantIdentifier: settings.api_merchant,
+						total: { amount: settings.amount },
+						currencyCode: settings.currency,
+						style: 'white-with-line'
+					};
+				}
+
+				$.ajaxSetup( {
+					cache: true
+				} );
+
+				$.getScript( settings.script )
+					.done( function( script, textStatus ) {
+						$modal.find( 'form' ).attr( 'action', data.redirect );
+						$modal.modal( {
+							fadeDuration: 250
+						} );
+					} );
+				data.messages = '<div class="catalystpay-payment-notice"></div>';
+			} catch ( e ) {
+				return true;
+			}
+
+			return false;
 		} );
 
-		$( '#order_review .cfw-secondary-btn' ).click( function( e ) {
+		$( '#order_review' ).change( function( e ) {
+			order_review_payment();
+		} );
+
+		order_review_payment();
+
+	} );
+} );
+
+function order_review_payment() {
+	const paymentMethod = 'catalystpay_gateway';
+	const currentUrl = window.location.href;
+	if ( jQuery( '#payment_method_catalystpay_gateway:checked' ).val() === paymentMethod && currentUrl.includes( '/checkout/order-pay/' ) ) {
+		jQuery( '.cfw-primary-btn.cfw-next-tab' ).click( function( e ) {
 			e.preventDefault();
 
-			const button = $( this );
+			const button = jQuery( this );
 
-			const paramURL = $( this ).attr( 'href' );
+			const paramURL = location.href;
 
 			const parts = paramURL.split( '/' );
 
@@ -66,7 +116,7 @@ document.addEventListener( 'DOMContentLoaded', function() {
 				orderID: orderId
 			};
 
-			$.ajax( {
+			jQuery.ajax( {
 				type: 'POST',
 				url: wcCatalystpayFix.ajaxurl,
 				data: data,
@@ -77,7 +127,7 @@ document.addEventListener( 'DOMContentLoaded', function() {
 					if ( res.success ) {
 						const settings = JSON.parse( res.data.object.settings );
 						button.removeClass( 'cfw-next-tab validate cfw-button-loading' );
-						paymentModal( settings, res.data.redirect, res.data.message );
+						paymentModal( settings, res.data.object.redirect, res.data.object.message );
 					}
 				},
 				error: function( xhr, ajaxOptions, thrownError ) {
@@ -86,8 +136,8 @@ document.addEventListener( 'DOMContentLoaded', function() {
 				}
 			} );
 		} );
-	} );
-} );
+	}
+}
 
 /**
  * Get payment modal iframe.
